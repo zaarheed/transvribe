@@ -3,8 +3,10 @@ import ReactMarkdown from "react-markdown";
 import classNames from "classnames";
 import { lambda } from "@/services/api";
 import { useRouter } from "next/router";
+import pg from "@/server-utils/pg";
+import VideoHeader from "@/components/youtube-video/video-header";
 
-export default function Home() {
+export default function YoutubeVideo({ video }) {
     const router = useRouter();
     const { id } = router.query;
     const [userInput, setUserInput] = useState("");
@@ -16,6 +18,8 @@ export default function Home() {
             "type": "apiMessage"
         }
     ]);
+
+    console.log(video);
 
     const messageListRef = useRef(null);
     const textAreaRef = useRef(null);
@@ -88,6 +92,7 @@ export default function Home() {
         <div className="w-full min-h-screen h-full relative">
             <img src="/assets/beams.jpg" alt="" className="fixed w-full h-full object-cover" />
             <div className="fixed inset-0 bg-[url(/assets/grid.svg)] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
+            <VideoHeader video={video} />
             <main className="relative z-10 flex flex-col justify-between items-center p-1 h-full sm:p-2">
                 <div ref={messageListRef} className="w-full rounded flex flex-col space-y-5 px-2 pt-4 pb-[13vh]">
                     {messages.map((message, index) => {
@@ -189,4 +194,22 @@ export default function Home() {
             </main>
         </div>
     )
+}
+
+export async function getServerSideProps({ params }) {
+    const { id } = params;
+
+    const [video] = await pg.execute(`
+        select * from youtube_videos where youtube_id = '${id}'
+    `);
+
+    if (!video) {
+        return {
+            notFound: true
+        }
+    }
+
+    return {
+        props: { video }
+    }
 }
