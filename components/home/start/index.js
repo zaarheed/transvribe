@@ -15,7 +15,7 @@ export default function Start() {
 
 	const handleSubmit = async (form) => {
 		console.log(form);
-		const id = form.url.split("v=").pop();
+		const id = form.url.split("v=").pop().split("&").shift();
 		const { id: videoId } = await lambda.get(`/load-video?id=${id}`);
 		router.push(`/ytv/${videoId}`);
 		// await lambda.get(`/search?s=${form.question}`)
