@@ -198,7 +198,7 @@ export default function YoutubeVideo({ video }) {
 export async function getServerSideProps({ params }) {
     const { id } = params;
 
-    const [video] = await pg.execute(`
+    let [video] = await pg.execute(`
         select * from youtube_videos where youtube_id = '${id}'
     `);
 
@@ -206,6 +206,11 @@ export async function getServerSideProps({ params }) {
         return {
             notFound: true
         }
+    }
+
+    video = {
+        ...video,
+        created_at: video.created_at.toISOString(),
     }
 
     return {
