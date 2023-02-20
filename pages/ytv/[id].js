@@ -23,11 +23,10 @@ export default function YoutubeVideo({ video }) {
 
     const messageListRef = useRef(null);
     const textAreaRef = useRef(null);
-
-    // Auto scroll chat to bottom
+    
     useEffect(() => {
-        const messageList = messageListRef.current;
-        messageList.scrollTop = messageList.scrollHeight;
+        if (!window) return;
+        window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: "smooth" });
     }, [messages]);
 
     // Focus on text field on load
@@ -93,7 +92,7 @@ export default function YoutubeVideo({ video }) {
             <img src="/assets/beams.jpg" alt="" className="fixed w-full h-full object-cover" />
             <div className="fixed inset-0 bg-[url(/assets/grid.svg)] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
             <VideoHeader video={video} />
-            <main className="relative z-10 flex flex-col justify-between items-center p-1 h-full sm:p-2">
+            <main className="relative z-10 flex flex-col justify-between items-center p-1 h-full sm:p-2 pt-20 md:pt-28 w-full max-w-5xl mx-auto">
                 <div ref={messageListRef} className="w-full rounded flex flex-col space-y-5 px-2 pt-4 pb-[13vh]">
                     {messages.map((message, index) => {
                         return (
@@ -135,8 +134,8 @@ export default function YoutubeVideo({ video }) {
                         )
                     })}
                 </div>
-                <div className="fixed bottom-0 left-0 w-full bg-white pb-2 pt-4 border-t">
-                    <form className="relative w-full max-w-5xl px-4 mx-auto flex flex-row space-x-2 items-center" onSubmit={handleSubmit}>
+                <div className="fixed bottom-0 md:bottom-10 left-0 w-full bg-white md:bg-transparent pb-2 pt-4 border-t border-none">
+                    <form className="relative w-full max-w-5xl px-4 mx-auto flex flex-row space-x-2 items-center md:bg-white md:p-4 md:rounded-xl md:shadow-xl" onSubmit={handleSubmit}>
                         <div className="relative w-full rounded-lg border-2 border-transparent bg-white px-5 shadow hover:border-blue-500 flex flex-row items-center">
                             <input
                                 name="userInput"
