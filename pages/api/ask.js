@@ -45,7 +45,7 @@ export default async function handler(req, res) {
     });
 
     console.log(response);
-    res.json({ response });
+    res.json(response);
 
     // const pineconeClient = new PineconeClient({
     // 	apiKey: process.env.PINECONE_API_KEY,
