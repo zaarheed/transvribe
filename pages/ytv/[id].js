@@ -143,7 +143,7 @@ export default function YoutubeVideo({ video }) {
                                 placeholder={loading ? "Waiting for response..." : "Ask a follow-up question"}
                                 className={`
                                     peer w-full rounded-md px-0 py-3
-                                    placeholder:text-transparent  focus:outline-none
+                                    placeholder:text-transparent  focus:outline-none disabled:bg-white
                                 `}
                                 autoComplete="off"
                                 disabled={loading}
@@ -183,7 +183,7 @@ export default function YoutubeVideo({ video }) {
                                 </button>
                             )}
                             {loading && (
-                                <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7 animate-spin text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <path d="M21 12a9 9 0 1 1-6.219-8.56" />
                                 </svg>
                             )}
