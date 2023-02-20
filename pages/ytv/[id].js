@@ -14,7 +14,7 @@ export default function YoutubeVideo({ video }) {
     const [loading, setLoading] = useState(false);
     const [messages, setMessages] = useState([
         {
-            "message": "Hi there! How can I help?",
+            "message": `We've transcribed the video you requested. Feel free to ask any questions, but keep in mind this is a work in progress. Please send all feedback and suggestions on Twitter: @zaarheed`,
             "type": "apiMessage"
         }
     ]);
