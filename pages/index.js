@@ -29,7 +29,7 @@ export default function Home() {
 							<b className="font-semibold">
 								Built by <a className="underline" href="https://www.twitter.com/zaarheed">Zahid</a>
 							</b>
-							, to make learning on YouTube 10x more productive.
+							, to make learning on YouTube 10x more productive. <a className="underline" href="https://www.github.com/zaarheed/transvribe">🍜 on GitHub</a>
 						</p>
 					</div>
 				</div>
