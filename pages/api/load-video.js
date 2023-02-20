@@ -25,7 +25,7 @@ export default async function handler(req, res) {
         insert into youtube_videos
         (id, slug, title, thumb_url, author, youtube_id, url, source, type)
         values
-        ('${videoRecordId}', '${videoRecordId}', '${title}', '${thumbUrl}', '${author}', '${id}', '${url}', 'youtube', 'youtube-video')
+        ('${videoRecordId}', '${videoRecordId}', '${title.replaceAll("'", "''")}', '${thumbUrl}', '${author.replaceAll("'", "''")}', '${id}', '${url}', 'youtube', 'youtube-video')
         returning id
     `);
 
@@ -35,7 +35,7 @@ export default async function handler(req, res) {
         insert into youtube_video_transcripts
         (id, youtube_id, text)
         values
-        ('${transcriptRecordId}', '${id}', '${transcript}')
+        ('${transcriptRecordId}', '${id}', '${transcript.replaceAll("'", "''")}')
         returning text
     `);
 
@@ -43,7 +43,7 @@ export default async function handler(req, res) {
         insert into youtube_video_parts
         (id, youtube_id, text, start, duration)
         values
-        ${parts.map(p => `('${uniqid()}', '${p.id}', '${p.text}', ${+p.start}, ${+p.duration})`).join(", ")}
+        ${parts.map(p => `('${uniqid()}', '${p.id}', '${p.text.replaceAll("'", "''")}', ${+p.start}, ${+p.duration})`).join(", ")}
     `);
     
     const payload = {
