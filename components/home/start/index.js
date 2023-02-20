@@ -14,9 +14,17 @@ export default function Start() {
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 
-	const handleSubmit = async (form) => {
+	const handleSubmit = async ({ url }) => {
 		setLoading(true);
-		const id = form.url.split("v=").pop().split("&").shift();
+		let id = null;
+
+		if (url.includes("youtu.be")) {
+			id = url.split("/").pop().split("?").shift();
+		}
+		else {
+			id = url.split("v=").pop().split("&").shift();
+		}
+
 		const { id: videoId } = await lambda.get(`/load-video?id=${id}`).then(r => r.json());
 		router.push(`/ytv/${videoId}`);
 		// await lambda.get(`/search?s=${form.question}`)
@@ -36,7 +44,7 @@ export default function Start() {
 							type="text"
 							name="url"
 							id="url"
-							placeholder="Paste a YouTube URL"
+							placeholder="Paste a YouTube URL (must not be in youtu.be format)"
 							className={`
 								peer w-full rounded-md px-3 py-3
 								placeholder:text-transparent
