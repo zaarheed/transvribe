@@ -184,7 +184,7 @@ export default function YoutubeVideo({ video }) {
                                 </button>
                             )}
                             {loading && (
-                                <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" stroke-Linecap="round" strokeLinejoin="round">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <path d="M21 12a9 9 0 1 1-6.219-8.56" />
                                 </svg>
                             )}
