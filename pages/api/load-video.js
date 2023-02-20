@@ -23,9 +23,9 @@ export default async function handler(req, res) {
     const videoRecordId = uniqid();
     const [video] = await pg.execute(`
         insert into youtube_videos
-        (id, slug, title, thumb_url, author, youtube_id)
+        (id, slug, title, thumb_url, author, youtube_id, url, source, type)
         values
-        ('${videoRecordId}', '${videoRecordId}', '${title}', '${thumbUrl}', '${author}', '${id}')
+        ('${videoRecordId}', '${videoRecordId}', '${title}', '${thumbUrl}', '${author}', '${id}', '${url}', 'youtube', 'youtube-video')
         returning id
     `);
 
