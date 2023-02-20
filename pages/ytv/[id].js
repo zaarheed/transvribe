@@ -19,8 +19,6 @@ export default function YoutubeVideo({ video }) {
         }
     ]);
 
-    console.log(video);
-
     const messageListRef = useRef(null);
     const textAreaRef = useRef(null);
     

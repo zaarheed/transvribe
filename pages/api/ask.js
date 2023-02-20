@@ -52,6 +52,5 @@ export default async function handler(req, res) {
             ('${uniqid()}', '${s.replaceAll("'", "''")}', '${response.text.replaceAll("'", "''")}', '${id}', 'youtube-video')
     `);
 
-    console.log(response);
     res.json(response);
 }
