@@ -1,7 +1,7 @@
 import { lambda } from "@/services/api";
 import { Formik } from "formik";
 import { useRouter } from "next/router";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import * as Yup from "yup";
 
 const startSchema = Yup.object().shape({
@@ -12,9 +12,10 @@ const startSchema = Yup.object().shape({
 export default function Start() {
 	const formRef = useRef();
 	const router = useRouter();
+	const [loading, setLoading] = useState(false);
 
 	const handleSubmit = async (form) => {
-		console.log(form);
+		setLoading(true);
 		const id = form.url.split("v=").pop().split("&").shift();
 		const { id: videoId } = await lambda.get(`/load-video?id=${id}`).then(r => r.json());
 		router.push(`/ytv/${videoId}`);
@@ -93,16 +94,24 @@ export default function Start() {
 						>
 							Ask your first question
 						</label>
-						<button
-							className={`
-								rounded-full p-1 text-white bg-blue-500 hover:bg-blue-600
-							`}
-							type="submit"
-						>
-							<svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-								<polyline points="9 18 15 12 9 6" />
-							</svg>
-						</button>
+						<div className="relative h-full flex flex-col justify-center">
+                            {!loading && (
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="rounded-full p-1 text-white bg-blue-500 hover:bg-blue-600"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                                        <polyline points="9 18 15 12 9 6" />
+                                    </svg>
+                                </button>
+                            )}
+                            {loading && (
+                                <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7 animate-spin text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                                </svg>
+                            )}
+                        </div>
 					</div>
 				</form>
 			)}
