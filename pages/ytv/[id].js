@@ -93,7 +93,7 @@ export default function YoutubeVideo({ video }) {
             <div className="fixed inset-0 bg-[url(/assets/grid.svg)] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
             <VideoHeader video={video} />
             <main className="relative z-10 flex flex-col justify-between items-center p-1 h-full sm:p-2 pt-20 md:pt-28 w-full max-w-5xl mx-auto">
-                <div ref={messageListRef} className="w-full rounded flex flex-col space-y-5 px-2 pt-4 pb-[13vh]">
+                <div ref={messageListRef} className="w-full rounded flex flex-col space-y-5 px-2 pt-4 pb-[20vh]">
                     {messages.map((message, index) => {
                         return (
                             <div
