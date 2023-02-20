@@ -39,16 +39,12 @@ export default async function handler(req, res) {
         returning text
     `);
 
-    for (let i = 0; i < parts.length; i ++) {
-        const { text, start, duration } = parts[i];
-        const partRecordId = uniqid();
-        await pg.execute(`
-            insert into youtube_video_parts
-            (id, youtube_id, text, start, duration)
-            values
-            ('${partRecordId}', '${id}', '${text}', ${+start}, ${+duration})
-        `);
-    }
+    await pg.execute(`
+        insert into youtube_video_parts
+        (id, youtube_id, text, start, duration)
+        values
+        ${parts.map(p => `('${uniqid()}', '${p.id}', '${p.text}', ${+p.start}, ${+p.duration})`).join(", ")}
+    `);
     
     const payload = {
         id: id
