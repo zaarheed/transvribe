@@ -44,7 +44,7 @@ export default function Start() {
 							type="text"
 							name="url"
 							id="url"
-							placeholder="Paste a YouTube URL (must not be in youtu.be format)"
+							placeholder="Paste a YouTube URL"
 							className={`
 								peer w-full rounded-md px-3 py-3
 								placeholder:text-transparent
