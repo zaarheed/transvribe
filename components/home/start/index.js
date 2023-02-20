@@ -1,5 +1,6 @@
 import { lambda } from "@/services/api";
 import { Formik } from "formik";
+import { useRouter } from "next/router";
 import { useRef } from "react";
 import * as Yup from "yup";
 
@@ -10,11 +11,13 @@ const startSchema = Yup.object().shape({
 
 export default function Start() {
 	const formRef = useRef();
+	const router = useRouter();
 
 	const handleSubmit = async (form) => {
 		console.log(form);
 		const id = form.url.split("v=").pop();
 		const { id: videoId } = await lambda.get(`/load-video?id=${id}`);
+		router.push(`/ytv/${videoId}`);
 		// await lambda.get(`/search?s=${form.question}`)
 	};
 
