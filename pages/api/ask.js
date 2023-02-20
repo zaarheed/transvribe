@@ -46,22 +46,4 @@ export default async function handler(req, res) {
 
     console.log(response);
     res.json(response);
-
-    // const pineconeClient = new PineconeClient({
-    // 	apiKey: process.env.PINECONE_API_KEY,
-    // 	baseUrl: process.env.PINECONE_BASE_URL,
-    // 	namespace: process.env.PINECONE_NAMESPACE
-    // });
-
-    // const vectorStore = await PineconeStore.fromDocuments(
-    //     pineconeClient,
-    //     docs
-    // );
-
-    // fromTexts(
-    //     pineconeClient,
-    //     ["Hello world", "Bye bye", "hello nice world"],
-    //     [{ id: 2 }, { id: 1 }, { id: 3 }],
-    //     new OpenAIEmbeddings()
-    //   );
 }
