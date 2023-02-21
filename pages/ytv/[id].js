@@ -34,7 +34,7 @@ export default function YoutubeVideo({ video }) {
 
     // Handle errors
     const handleError = () => {
-        setMessages((prevMessages) => [...prevMessages, { "message": "Oops! There seems to be an error. Please try again.", "type": "apiMessage" }]);
+        setMessages((prevMessages) => [...prevMessages, { "message": "Oops! We're getting way too much traffic right now to handle your request. Please try again in a few hours.", "type": "apiMessage" }]);
         setLoading(false);
         setUserInput("");
     }
