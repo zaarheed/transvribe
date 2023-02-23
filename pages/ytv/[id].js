@@ -8,7 +8,7 @@ import VideoHeader from "@/components/youtube-video/video-header";
 
 export default function YoutubeVideo({ video }) {
     const router = useRouter();
-    const { id } = router.query;
+    const { id, firstQuestion } = router.query;
     const [userInput, setUserInput] = useState("");
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -27,6 +27,14 @@ export default function YoutubeVideo({ video }) {
         window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: "smooth" });
     }, [messages]);
 
+    useEffect(() => {
+        if (!firstQuestion) return;
+        if (messages.length > 1) return;
+
+        setUserInput(decodeURIComponent(firstQuestion));
+        ask(decodeURIComponent(firstQuestion));
+    }, [firstQuestion])
+
     // Focus on text field on load
     useEffect(() => {
         textAreaRef.current.focus();
@@ -43,15 +51,19 @@ export default function YoutubeVideo({ video }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (userInput.trim() === "") {
+        await ask(userInput);
+    };
+
+    const ask = async (question) => {
+        if (question.trim() === "") {
             return;
         }
 
         setLoading(true);
-        setMessages((prevMessages) => [...prevMessages, { "message": userInput, "type": "userMessage" }]);
+        setMessages((prevMessages) => [...prevMessages, { "message": question, "type": "userMessage" }]);
 
         // Send user question and history to API
-        const response = await lambda.get(`/ask?youtubeVideoId=${id}&s=${encodeURIComponent(userInput)}`);
+        const response = await lambda.get(`/ask?youtubeVideoId=${id}&s=${encodeURIComponent(question)}`);
 
         if (!response.ok) {
             handleError();
@@ -64,8 +76,7 @@ export default function YoutubeVideo({ video }) {
 
         setMessages((prevMessages) => [...prevMessages, { "message": data.text, "type": "apiMessage" }]);
         setLoading(false);
-
-    };
+    }
 
     // Prevent blank submissions and allow for multiline input
     const handleEnter = (e) => {

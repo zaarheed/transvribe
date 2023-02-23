@@ -14,7 +14,7 @@ export default function Start() {
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 
-	const handleSubmit = async ({ url }) => {
+	const handleSubmit = async ({ url, question }) => {
 		setLoading(true);
 		let id = null;
 
@@ -26,7 +26,7 @@ export default function Start() {
 		}
 
 		const { id: videoId } = await lambda.get(`/load-video?id=${id}`).then(r => r.json());
-		router.push(`/ytv/${videoId}`);
+		router.push(`/ytv/${videoId}?firstQuestion=${encodeURIComponent(question)}`);
 		// await lambda.get(`/search?s=${form.question}`)
 	};
 
