@@ -42,6 +42,12 @@ export default async function loadYoutubeVideoFromId(id) {
         values
         ${parts.map(p => `('${uniqid()}', '${p.id}', '${p.text.replaceAll("'", "''")}', ${+p.start}, ${+p.duration})`).join(", ")}
     `);
+
+    await pg.execute(`
+        update youtube_videos
+        set status = 'ready'
+        where id = '${videoRecordId}'
+    `);
     
     const response = {
         youtubeId: id,
