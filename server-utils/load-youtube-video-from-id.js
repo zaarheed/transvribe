@@ -5,7 +5,7 @@ import uniqid from "uniqid";
 
 export default async function loadYoutubeVideoFromId(id) {
     const [existingVideo] = await pg.execute(`
-        select id from youtube_videos where youtube_id = '${id}'
+        select id from youtube_videos where youtube_id = '${id}' AND status = 'ready'
     `);
 
     if (existingVideo) {
@@ -44,7 +44,8 @@ export default async function loadYoutubeVideoFromId(id) {
     `);
     
     const response = {
-        id: id
+        youtubeId: id,
+        id: videoRecordId
     };
 
     return response;
