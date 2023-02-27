@@ -9,14 +9,44 @@ import { OPENAI_API_KEY } from "@/constants/config";
 import uniqid from "uniqid";
 
 export default async function handler(req, res) {
-    const { youtubeVideoId, s } = req.query;
+    const { youtubeVideoId, s, youtubePlaylistId } = req.query;
 
-    const [{ text: fullTranscript, author, id }] = await pg.execute(`
-        select t.text, v.author, v.id
-        from youtube_video_transcripts t
-        join youtube_videos v on t.youtube_id = v.youtube_id
-        where t.youtube_id = '${youtubeVideoId}'
-    `);
+    let fullTranscript = "", author = "", id = "";
+
+    if (youtubePlaylistId) {
+
+        const videos = await pg.execute(`
+            SELECT videos.*, transcripts.text
+            FROM youtube_videos videos
+            JOIN youtube_playlist_youtube_video_map map
+            ON videos.youtube_id = map.youtube_video_id
+            JOIN youtube_video_transcripts transcripts
+            ON videos.youtube_id = transcripts.youtube_id
+            WHERE map.youtube_playlist_id = '${youtubePlaylistId}'
+        `);
+
+        if (videos.length < 1) {
+            res.status(400).json({ message: "Could not retrieve transcript" });
+            return;
+        }
+
+        author = videos[0].author;
+        id = youtubePlaylistId;
+
+        fullTranscript = videos.map(video => video.text).join("\n\n\n");
+    }
+
+    if (youtubeVideoId) {
+        let [{ text, author, id }] = await pg.execute(`
+            select t.text, v.author, v.id
+            from youtube_video_transcripts t
+            join youtube_videos v on t.youtube_id = v.youtube_id
+            where t.youtube_id = '${youtubeVideoId}'
+        `);
+
+        fullTranscript = text;
+    }
+
 
     if (!fullTranscript) {
         res.status(400).json({ message: "Could not retrieve transcript" });
