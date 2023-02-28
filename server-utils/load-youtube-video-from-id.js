@@ -10,7 +10,10 @@ export default async function loadYoutubeVideoFromId(id) {
 
     if (existingVideo) {
         console.info(`Video ${id} already exists`);
-        return { id: id };
+        return {
+            youtubeId: id,
+            id: existingVideo.id
+        };
     }
 
     const { title, author, thumbUrl, url } = await getYouTubeVideoInfo(id);
@@ -48,7 +51,7 @@ export default async function loadYoutubeVideoFromId(id) {
         set status = 'ready'
         where id = '${videoRecordId}'
     `);
-    
+
     const response = {
         youtubeId: id,
         id: videoRecordId
