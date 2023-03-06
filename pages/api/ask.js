@@ -3,7 +3,7 @@ import { Document } from "langchain/document";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { HNSWLib } from "langchain/vectorstores";
 import { OpenAIEmbeddings } from "langchain/embeddings";
-import { VectorDBQAChain } from "langchain/chains";
+import { ChatVectorDBQAChain } from "langchain/chains";
 import { OpenAI } from "langchain/llms";
 import { OPENAI_API_KEY } from "@/constants/config";
 import uniqid from "uniqid";
@@ -64,15 +64,17 @@ export default async function handler(req, res) {
 
     const doc = new Document({ pageContent: fullTranscript, metadata: { source: "youtube", type: "youtube-video", author: author, youtubeId: youtubeVideoId } });
 
-    const docs = splitter.splitDocuments([doc]);
+    const docs = await splitter.splitDocuments([doc]);
+
+    console.log(docs);
 
     const vectorStore = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings());
 
-    const chain = VectorDBQAChain.fromLLM(model, vectorStore);
+    const chain = ChatVectorDBQAChain.fromLLM(model, vectorStore);
 
     const response = await chain.call({
-        input_documents: docs,
-        query: s,
+        question: s,
+        chat_history: []
     });
 
     await pg.execute(`
