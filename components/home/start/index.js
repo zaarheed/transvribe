@@ -121,6 +121,9 @@ export default function Start() {
                             )}
                         </div>
 					</div>
+					<p className="text-xs text-center text-gray-700">
+						Note: The page will not load if your video does not have English captions. Support for more languages coming soon.
+					</p>
 				</form>
 			)}
 		</Formik>
