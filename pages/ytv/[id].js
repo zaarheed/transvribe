@@ -14,7 +14,7 @@ export default function YoutubeVideo({ video }) {
     const [loading, setLoading] = useState(false);
     const [messages, setMessages] = useState([
         {
-            "message": `We're still processing your video but you can begin to ask any questions. Please keep in mind this is a work in progress and send all feedback on Twitter: @zaarheed`,
+            "message": `We're still processing your video but you can begin to ask any questions. Please keep in mind this is a work in progress and send all feedback on Twitter: [@zaarheed](https://www.twitter.com/zaarheed)`,
             "type": "apiMessage"
         }
     ]);
@@ -114,8 +114,8 @@ export default function YoutubeVideo({ video }) {
                                     loading && index === messages.length - 1 && "animate-pulse"
                                 )}
                             >
-                                <div className="w-full">
-                                    <ReactMarkdown linkTarget={"_blank"}>
+                                <div className="w-full [&>a]:underline">
+                                    <ReactMarkdown linkTarget={"_blank"} className="[&>a]:underline">
                                         {message.message}
                                     </ReactMarkdown>
                                 </div>
