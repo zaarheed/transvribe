@@ -74,7 +74,13 @@ export default function YoutubeVideo({ video }) {
         setUserInput("");
         const data = await response.json();
 
-        setMessages((prevMessages) => [...prevMessages, { "message": data.text, "type": "apiMessage" }]);
+        let message = data.text;
+
+        if (messages.length === 5) {
+            message = `${message}\n\n\nBy the way, thanks for using Transvribe! Please let me know what you're using it for and how I can make it better! [Press here to open Twitter: @zaarheed](https://www.twitter.com/zaarheed)`;
+        }
+
+        setMessages((prevMessages) => [...prevMessages, { "message": message, "type": "apiMessage" }]);
         setLoading(false);
     }
 
@@ -115,7 +121,7 @@ export default function YoutubeVideo({ video }) {
                                 )}
                             >
                                 <div className="w-full [&>a]:underline">
-                                    <ReactMarkdown linkTarget={"_blank"} className="[&>a]:underline">
+                                    <ReactMarkdown linkTarget={"_blank"} className="[&>a]:underline whitespace-pre-wrap">
                                         {message.message}
                                     </ReactMarkdown>
                                 </div>
