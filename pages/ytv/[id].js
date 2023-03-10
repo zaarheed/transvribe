@@ -5,6 +5,7 @@ import { lambda } from "@/services/api";
 import { useRouter } from "next/router";
 import pg from "@/server-utils/pg";
 import VideoHeader from "@/components/youtube-video/video-header";
+import BLACKLISTED_WORDS from "@/constants/blacklisted-words";
 
 export default function YoutubeVideo({ video }) {
     const router = useRouter();
@@ -61,6 +62,12 @@ export default function YoutubeVideo({ video }) {
 
         setLoading(true);
         setMessages((prevMessages) => [...prevMessages, { "message": question, "type": "userMessage" }]);
+
+        if (BLACKLISTED_WORDS.some(word => question.toLowerCase().split(" ").includes(word))) {
+            setMessages((prevMessages) => [...prevMessages, { "message": "Dude, come on! You can't ask qustions like that!", "type": "apiMessage" }]);
+            setLoading(false);
+            return;
+        }
 
         // Send user question and history to API
         const response = await lambda.get(`/ask?youtubeVideoId=${id}&s=${encodeURIComponent(question)}`);
