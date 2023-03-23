@@ -59,7 +59,7 @@ export default function PlaylistHeader({ playlist }) {
                 </a>
             </div>
             {isOpen && (
-                <div className="w-full max-w-5xl mx-auto px-2 grid grid-cols-3 md:grid-cols-8 gap-4 py-6">
+                <div className="w-full max-w-5xl mx-auto px-2 grid grid-cols-3 md:grid-cols-8 gap-4 py-6 bg-white h-7/12 overflow-y-scroll">
                     {videos.map(video => (
                         <div key={video.id} className="w-full relative">
                             <figure
