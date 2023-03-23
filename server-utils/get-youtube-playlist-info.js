@@ -38,7 +38,7 @@ export default async function getYoutubePlaylistInfo(playlistId) {
     const { items: videos } = playlistData;
     playlistInfo.videos = videos.map(video => ({
         title: video.snippet.title,
-        thumbUrl: video.snippet.thumbnails.high.url,
+        thumbUrl: video.snippet.thumbnails.high?.url,
         author: video.snippet.channelTitle,
         youtubeId: video.contentDetails.videoId,
         url: `https://www.youtube.com/watch?v=${video.contentDetails.videoId}`,

@@ -15,6 +15,9 @@ export default async function getYouTubeVideoInfo(videoId) {
     
     const { items: videos } = data;
     const video = videos.pop();
+
+    if (!video) return null;
+
     const title = video.snippet.title;
     const author = video.snippet.channelTitle;
     const thumbUrl = video.snippet.thumbnails.high.url;

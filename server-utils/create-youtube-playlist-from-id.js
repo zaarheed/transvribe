@@ -28,6 +28,8 @@ export default async function createYoutubePlaylistFromId(id) {
         let video = videos[i];
 
         video = await loadYoutubeVideoFromId(video.youtubeId);
+
+        if (!video) continue;
         
         await pg.execute(`
             insert into youtube_playlist_youtube_video_map
