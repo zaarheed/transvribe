@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import classNames from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
 
-export default function Modal({ children, selector = "#modal", onClose = () => {}, show = false, width = "100%", height = "100%", size = "md", showCloseButton = false }) {
+export default function Modal({ children, selector = "#modal", onClose = () => {}, show = false, size = "md", showCloseButton = false }) {
     useEffect(() => {
         if (show === false) return;
         document.body.classList.add("overflow-hidden");
@@ -24,10 +24,9 @@ export default function Modal({ children, selector = "#modal", onClose = () => {
                                     animate={{ scale: 1 }}
                                     exit={{ scale: 0.95 }}
                                     className={classNames(
-                                        "relative shadow-lg overflow-hidden flex flex-col relative w-full h-full border bg-white",
+                                        "relative shadow-lg overflow-hidden flex flex-col relative border bg-white",
                                         size === "playlist" ? "w-[600px] h-[420px]" : null
                                     )}
-                                    style={{ width: size ? null :  width, height: size ? null : height }}
                                 >
                                     {showCloseButton && (
                                         <button
