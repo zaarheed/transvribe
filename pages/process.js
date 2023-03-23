@@ -10,7 +10,6 @@ export default function Process() {
     useEffect(() => {
         if (!pro_session_id) return;
         const session = JSON.parse(localStorage.getItem(SESSION_KEY) || null);
-        console.log(session);
         if (!session) return;
         validateSession();
     }, [pro_session_id]);
