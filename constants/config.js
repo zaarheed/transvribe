@@ -14,6 +14,8 @@ export const REDDIT_PASSWORD = process.env.REDDIT_PASSWORD;
 
 export const REDDIT_USERNAME = process.env.REDDIT_USERNAME;
 
+export const SESSION_KEY = "@transvribe/pro-session";
+
 export const STRIPE_PRICE_ID = process.env.STRIPE_PRICE_ID;
 
 export const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
