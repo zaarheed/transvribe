@@ -7,12 +7,13 @@ const stripe = stripeLib(STRIPE_SECRET_KEY);
 
 export default async function handler(req, res) {
     const id = uniqid();
+    const { first_url } = req.body;
 
     const [session] = await pg.execute(`
         insert into pro_sessions
-        (id, created_at, expires_at)
+        (id, created_at, expires_at, first_url)
         values
-        ('${id}', now(), now())
+        ('${id}', now(), now(), '${first_url.replaceAll("'", "''")}')
     `);
 
     const { url } = await stripe.paymentLinks.create({
