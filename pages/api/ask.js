@@ -66,8 +66,6 @@ export default async function handler(req, res) {
 
     const docs = await splitter.splitDocuments([doc]);
 
-    console.log(docs);
-
     const vectorStore = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings());
 
     const chain = ChatVectorDBQAChain.fromLLM(model, vectorStore);
