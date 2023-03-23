@@ -18,7 +18,17 @@ export default async function loadYoutubeVideoFromId(id) {
 
     const { title, author, thumbUrl, url } = await getYouTubeVideoInfo(id);
 
-    const { transcript, parts = [] } = await getTranscriptForVideo(id);
+    let transcript = "";
+    let parts = [];
+
+    try {
+        const data = await getTranscriptForVideo(id);
+        transcript = data.transcript;
+        parts = data.parts;
+    }
+    catch (error) {
+        // do nothing
+    }
 
     const videoRecordId = uniqid();
     const [video] = await pg.execute(`
