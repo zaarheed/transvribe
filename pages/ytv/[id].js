@@ -70,18 +70,17 @@ export default function YoutubeVideo({ video }) {
         }
 
         // Send user question and history to API
-        const response = await lambda.get(`/ask?youtubeVideoId=${id}&s=${encodeURIComponent(question)}`);
+        const [error, response] = await lambda.get(`/ask?youtubeVideoId=${id}&s=${encodeURIComponent(question)}`);
 
-        if (!response.ok) {
+        if (error) {
             handleError();
             return;
         }
 
         // Reset user input
         setUserInput("");
-        const data = await response.json();
 
-        let message = data.text;
+        let message = response.text;
 
         if (messages.length === 5) {
             message = `${message}\n\n\nBy the way, thanks for using Transvribe! Please let me know what you're using it for and how I can make it better! [Press here to open Twitter: @zaarheed](https://www.twitter.com/zaarheed)`;

@@ -70,18 +70,17 @@ export default function YoutubePlaylist({ playlist }) {
         setMessages((prevMessages) => [...prevMessages, { "message": question, "type": "userMessage" }]);
 
         // Send user question and history to API
-        const response = await lambda.get(`/ask?youtubePlaylistId=${id}&s=${encodeURIComponent(question)}`);
+        const [error, response] = await lambda.get(`/ask?youtubePlaylistId=${id}&s=${encodeURIComponent(question)}`);
 
-        if (!response.ok) {
+        if (error) {
             handleError();
             return;
         }
 
         // Reset user input
         setUserInput("");
-        const data = await response.json();
 
-        setMessages((prevMessages) => [...prevMessages, { "message": data.text, "type": "apiMessage" }]);
+        setMessages((prevMessages) => [...prevMessages, { "message": response.text, "type": "apiMessage" }]);
         setLoading(false);
     }
 

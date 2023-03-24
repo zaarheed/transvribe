@@ -16,7 +16,12 @@ export default async function handler(req, res) {
         res.status(400).json({ error: "No id or url provided" });
     }
     
-    const payload = await loadYoutubeVideoFromId(id);
+    const [error, payload] = await loadYoutubeVideoFromId(id);
+
+    if (error) {
+        res.status(400).json({ message: error });
+        return;
+    }
 
     res.json(payload);
 }

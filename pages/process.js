@@ -15,7 +15,9 @@ export default function Process() {
     }, [pro_session_id]);
 
     const validateSession = async () => {
-        const { expiresIn, expiresAt, first_url } = await lambda.get(`/validate-session?id=${pro_session_id}`).then(res => res.json());
+        const [error, response] = await lambda.get(`/validate-session?id=${pro_session_id}`).then(res => res.json());
+
+        const { expiresIn, expiresAt, first_url } = response;
 
         if (expiresIn < 1) {
             localStorage.removeItem(SESSION_KEY);
@@ -26,7 +28,10 @@ export default function Process() {
         // import playlist
         let playlistId = first_url.split("/").pop().split("list=").pop();
 
-		const { id: youtubeId } = await lambda.get(`/load-youtube-playlist?id=${playlistId}`).then(r => r.json());
+		const [playlistError, playlistResponse] = await lambda.get(`/load-youtube-playlist?id=${playlistId}`).then(r => r.json());
+
+        const { id: youtubeId } = playlistResponse;
+        
 		router.push(`/ytp/${youtubeId}`);
     }
 

@@ -60,7 +60,9 @@ export default async function handler(req, res) {
     }
 
     if (!fullTranscript) {
-        await loadYoutubeVideoFromId(youtubeVideoId);
+        const [error] = await loadYoutubeVideoFromId(youtubeVideoId);
+        res.status(400).json({ message: error });
+        return;
     }
 
     let [videoRecord] = await pg.execute(`

@@ -10,10 +10,13 @@ export default async function loadYoutubeVideoFromId(id) {
 
     if (existingVideo) {
         console.info(`Video ${id} already exists`);
-        return {
-            youtubeId: id,
-            id: existingVideo.id
-        };
+        return [
+            null,
+            {
+                youtubeId: id,
+                id: existingVideo.id
+            }
+        ];
     }
 
     const { title, author, thumbUrl, url } = await getYouTubeVideoInfo(id);
@@ -27,7 +30,7 @@ export default async function loadYoutubeVideoFromId(id) {
         parts = data.parts;
     }
     catch (error) {
-        // do nothing
+        return ["No captions available"];
     }
 
     const videoRecordId = uniqid();
@@ -67,5 +70,5 @@ export default async function loadYoutubeVideoFromId(id) {
         id: videoRecordId
     };
 
-    return response;
+    return [null, response];
 }
