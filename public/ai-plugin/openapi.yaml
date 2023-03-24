@@ -10,6 +10,19 @@ paths:
     get:
       operationId: ask
       summary: Ask a YouTube video a question
+      parameters:
+        - in: path
+          name: url
+          schema:
+            type: string
+          required: true
+          description: The full URL of the YouTube video
+        - in: path
+          name: s
+          schema:
+            type: string
+          required: true
+          description: The question to ask the video
       responses:
         "200":
           description: OK

@@ -7,9 +7,10 @@ import { ChatVectorDBQAChain } from "langchain/chains";
 import { OpenAI } from "langchain/llms";
 import { OPENAI_API_KEY } from "@/constants/config";
 import uniqid from "uniqid";
+import loadYoutubeVideoFromId from "@/server-utils/load-youtube-video-from-id";
 
 export default async function handler(req, res) {
-    const { youtubeVideoId, s, youtubePlaylistId } = req.query;
+    let { youtubeVideoId, s, youtubePlaylistId, url } = req.query;
 
     let fullTranscript = "", author = "", id = "";
 
@@ -36,17 +37,40 @@ export default async function handler(req, res) {
         fullTranscript = videos.map(video => video.text).join("\n\n\n");
     }
 
+    if (url) {
+        if (url.includes("youtu.be")) {
+			youtubeVideoId = url.split("/").pop().split("?").shift();
+		}
+		else {
+			youtubeVideoId = url.split("v=").pop().split("&").shift();
+		}
+    }
+
+    console.log("youtubeVideoId", youtubeVideoId);
+
     if (youtubeVideoId) {
-        let [{ text, author, id }] = await pg.execute(`
+        let [videoRecord] = await pg.execute(`
             select t.text, v.author, v.id
             from youtube_video_transcripts t
             join youtube_videos v on t.youtube_id = v.youtube_id
             where t.youtube_id = '${youtubeVideoId}'
         `);
 
-        fullTranscript = text;
+        fullTranscript = videoRecord ? videoRecord.text : null;
     }
 
+    if (!fullTranscript) {
+        await loadYoutubeVideoFromId(youtubeVideoId);
+    }
+
+    let [videoRecord] = await pg.execute(`
+            select t.text, v.author, v.id
+            from youtube_video_transcripts t
+            join youtube_videos v on t.youtube_id = v.youtube_id
+            where t.youtube_id = '${youtubeVideoId}'
+        `);
+
+    fullTranscript = videoRecord.text;
 
     if (!fullTranscript) {
         res.status(400).json({ message: "Could not retrieve transcript" });
