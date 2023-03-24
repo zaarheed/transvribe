@@ -1,7 +1,20 @@
 import loadYoutubeVideoFromId from "@/server-utils/load-youtube-video-from-id";
 
 export default async function handler(req, res) {
-    const { id } = req.query;
+    let { id, url } = req.query;
+
+    if (url) {
+        if (url.includes("youtu.be")) {
+			id = url.split("/").pop().split("?").shift();
+		}
+		else {
+			id = url.split("v=").pop().split("&").shift();
+		}
+    }
+
+    if (!id) {
+        res.status(400).json({ error: "No id or url provided" });
+    }
     
     const payload = await loadYoutubeVideoFromId(id);
 

@@ -34,7 +34,7 @@ export default function Start() {
 			id = url.split("v=").pop().split("&").shift();
 		}
 
-		const { youtubeId } = await lambda.get(`/load-video?id=${id}`).then(r => r.json());
+		const { youtubeId } = await lambda.get(`/load-video?url=${encodeURIComponent(url)}`).then(r => r.json());
 		router.push(`/ytv/${youtubeId}?firstQuestion=${encodeURIComponent(question)}`);
 		// await lambda.get(`/search?s=${form.question}`)
 	};
