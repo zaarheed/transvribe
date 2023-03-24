@@ -18,7 +18,7 @@ export default function Start() {
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 	const [showPlaylistModal, setPlaylistModal] = useState(false);
-	const [showCaptionsModal, setCaptionsModal] = useState(true);
+	const [showCaptionsModal, setCaptionsModal] = useState(false);
 
 	const handleSubmit = async ({ url, question }) => {
 		setLoading(true);
