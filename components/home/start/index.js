@@ -5,6 +5,7 @@ import { Formik } from "formik";
 import { useRouter } from "next/router";
 import { Fragment, useRef, useState } from "react";
 import * as Yup from "yup";
+import EnglishCaptionsModal from "./english-captions-modal";
 import PlaylistModal from "./playlist-modal";
 
 const startSchema = Yup.object().shape({
@@ -17,6 +18,7 @@ export default function Start() {
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 	const [showPlaylistModal, setPlaylistModal] = useState(false);
+	const [showCaptionsModal, setCaptionsModal] = useState(true);
 
 	const handleSubmit = async ({ url, question }) => {
 		setLoading(true);
@@ -37,6 +39,7 @@ export default function Start() {
 		const [error, response] = await lambda.get(`/load-video?url=${encodeURIComponent(url)}`);
 		
 		if (error) {
+			setCaptionsModal(true);
 			setLoading(false);
 			return;
 		}
@@ -164,6 +167,9 @@ export default function Start() {
 			</Formik>
 			<Modal show={showPlaylistModal} onClose={() => setPlaylistModal(false)} showCloseButton={true} size="playlist">
 				<PlaylistModal url={formRef?.current?.values?.url} />
+			</Modal>
+			<Modal show={showCaptionsModal} onClose={() => setCaptionsModal(false)} showCloseButton={true} size="playlist">
+				<EnglishCaptionsModal url={formRef?.current?.values?.url} />
 			</Modal>
 		</Fragment>
 	)
