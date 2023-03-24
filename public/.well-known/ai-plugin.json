@@ -1,0 +1,18 @@
+{
+    "schema_version": "v1",
+    "name_for_human": "Transvribe",
+    "name_for_model": "Transvribe",
+    "description_for_human": "Plugin that allows you to ask any YouTube video a question.",
+    "description_for_model": "Plugin that answers questions based on content in a YouTube video.",
+    "auth": {
+        "type": "none"
+    },
+    "api": {
+        "type": "openapi",
+        "url": "https://wwww.transvribe.com/ai-plugin/openapi.yaml",
+        "is_user_authenticated": false
+    },
+    "logo_url": "https://www.transvribe.com/assets/sq-logo-100.jpg",
+    "contact_email": "zahid@transvribe.com",
+    "legal_info_url": "htts://www.transvribe.com"
+}

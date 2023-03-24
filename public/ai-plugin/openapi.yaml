@@ -1,0 +1,27 @@
+openapi: 3.0.1
+info:
+  title: Transvribe Plugin
+  description: A plugin that allows users to ask any YouTube video a question via ChatGPT.
+  version: 'v1'
+servers:
+  - url: http://localhost:3000
+paths:
+  /api/ask:
+    get:
+      operationId: ask
+      summary: Ask a YouTube video a question
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getAskResponse'
+components:
+  schemas:
+    getAskResponse:
+      type: object
+      properties:
+        text:
+          type: string
+          description: Answer to the question asked.
