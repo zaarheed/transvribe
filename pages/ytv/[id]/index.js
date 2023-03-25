@@ -6,6 +6,8 @@ import { useRouter } from "next/router";
 import pg from "@/server-utils/pg";
 import VideoHeader from "@/components/youtube-video/video-header";
 import BLACKLISTED_WORDS from "@/constants/blacklisted-words";
+import Modal from "@/components/shared/modal";
+import MoreOptionsModal from "@/components/youtube-video/more-options-modal";
 
 export default function YoutubeVideo({ video }) {
     const router = useRouter();
@@ -13,6 +15,7 @@ export default function YoutubeVideo({ video }) {
     const [userInput, setUserInput] = useState("");
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [showMoreOptions, setShowMoreOptions] = useState(false);
     const [messages, setMessages] = useState([
         {
             "message": `We're still processing your video but you can begin to ask any questions. Please keep in mind this is a work in progress and send all feedback on Twitter: [@zaarheed](https://www.twitter.com/zaarheed)`,
@@ -22,7 +25,7 @@ export default function YoutubeVideo({ video }) {
 
     const messageListRef = useRef(null);
     const textAreaRef = useRef(null);
-    
+
     useEffect(() => {
         if (!window) return;
         window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: "smooth" });
@@ -191,23 +194,39 @@ export default function YoutubeVideo({ video }) {
                                 {loading ? "Waiting for response..." : "Ask a follow-up question"}
                             </label>
                         </div>
-                        <div className="relative h-full flex flex-col justify-center">
-                            {!loading && (
+                        <div className="relative h-full flex flex-row items-center">
+                            <div className="shrink-0">
+                                {!loading && (
+                                    <button
+                                        type="submit"
+                                        disabled={loading}
+                                        className="rounded-full p-1 text-white bg-blue-500 hover:bg-blue-600"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                                            <polyline points="9 18 15 12 9 6" />
+                                        </svg>
+                                    </button>
+                                )}
+                                {loading && (
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7 animate-spin text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                                    </svg>
+                                )}
+                            </div>
+                            <div className="shrink-0 hidden sm:block">
                                 <button
-                                    type="submit"
-                                    disabled={loading}
-                                    className="rounded-full p-1 text-white bg-blue-500 hover:bg-blue-600"
+                                    type="button"
+                                    onClick={() => setShowMoreOptions(true)}
+                                    className="ml-1 p-1 text-gray-700 rounded-full hover:text-gray-900 hover:scale-105 duration-200"
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                                        <polyline points="9 18 15 12 9 6" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5" />
                                     </svg>
                                 </button>
-                            )}
-                            {loading && (
-                                <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7 animate-spin text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-                                </svg>
-                            )}
+                                <Modal show={showMoreOptions} onClose={() => setShowMoreOptions(false)} size="playlist">
+                                    <MoreOptionsModal video={video} />
+                                </Modal>
+                            </div>
                         </div>
                     </form>
                 </div>
