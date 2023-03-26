@@ -2,7 +2,7 @@ export default function EnglishCaptionsModal({ onClose }) {
     return (
         <div className="w-full h-full py-14 px-10 flex flex-col text-gray-700 flex flex-col justify-center">
             <div className="w-full flex flex-row justify-center mb-3">
-                <img src="/assets/monkey.png" className="w-32 md:w-40" />
+                <img src="/assets/monkey-english.png" className="w-32 md:w-40" />
             </div>
             <p className="md:text-3xl font-bold text-center text-gray-900">
                 This video is not supported... yet!
