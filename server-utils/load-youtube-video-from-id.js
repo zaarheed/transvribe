@@ -19,7 +19,19 @@ export default async function loadYoutubeVideoFromId(id) {
         ];
     }
 
-    const { title, author, thumbUrl, url } = await getYouTubeVideoInfo(id);
+    let title, author, thumbUrl, url;
+
+    try {
+        const response = await getYouTubeVideoInfo(id);
+        title = response.title;
+        author = response.author;
+        thumbUrl = response.thumbUrl;
+        url = response.url;
+    }
+    catch (error) {
+        return ["Invalid YouTube video URL"];
+    }
+
 
     let transcript = "";
     let parts = [];

@@ -46,8 +46,6 @@ export default async function handler(req, res) {
 		}
     }
 
-    console.log("youtubeVideoId", youtubeVideoId);
-
     if (youtubeVideoId) {
         let [videoRecord] = await pg.execute(`
             select t.text, v.author, v.id
