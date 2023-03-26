@@ -23,6 +23,8 @@ export default function YoutubeVideo({ video }) {
         }
     ]);
 
+    const promptMessage = messages.length > 1 ? "Ask another question" : "Ask a question";
+
     const messageListRef = useRef(null);
     const textAreaRef = useRef(null);
 
@@ -164,10 +166,10 @@ export default function YoutubeVideo({ video }) {
                             <input
                                 name="userInput"
                                 id="userInput"
-                                placeholder={loading ? "Waiting for response..." : "Ask a follow-up question"}
+                                placeholder={loading ? "Waiting for response..." : promptMessage}
                                 className={`
                                     peer w-full rounded-md px-0 py-3
-                                    placeholder:text-transparent  focus:outline-none disabled:bg-white
+                                    placeholder:text-transparent focus:outline-none disabled:bg-white
                                 `}
                                 autoComplete="off"
                                 disabled={loading}
@@ -189,9 +191,10 @@ export default function YoutubeVideo({ video }) {
                                     peer-focus:-top-0 peer-focus:ml-3 peer-focus:text-sm
                                     peer-focus:text-gray-800 peer-focus:bg-blue-500 peer-focus:text-white rounded
                                     peer-placeholder-shown:text-gray-500 peer-placeholder-shown:bg-white
+                                    peer-disabled:text-gray-400 peer-disabled:animate-pulse
                                 `}
                             >
-                                {loading ? "Waiting for response..." : "Ask a follow-up question"}
+                                {loading ? "Waiting for response..." : promptMessage}
                             </label>
                         </div>
                         <div className="relative h-full flex flex-row items-center">
