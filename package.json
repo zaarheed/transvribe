@@ -30,7 +30,6 @@
 	},
 	"description": "Ask any video, any question",
 	"version": "0.0.0",
-	"main": "postcss.config.js",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/zaarheed/transvribe.git"
