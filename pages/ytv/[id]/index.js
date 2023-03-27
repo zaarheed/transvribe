@@ -226,7 +226,7 @@ export default function YoutubeVideo({ video }) {
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5" />
                                     </svg>
                                 </button>
-                                <Modal show={showMoreOptions} onClose={() => setShowMoreOptions(false)} size="playlist">
+                                <Modal show={showMoreOptions} onClose={() => setShowMoreOptions(false)} size="playlist" showCloseButton={true}>
                                     <MoreOptionsModal video={video} />
                                 </Modal>
                             </div>
