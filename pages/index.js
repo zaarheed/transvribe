@@ -1,4 +1,5 @@
 import Start from "@/components/home/start";
+import FeaturedOnTailwind from "@/components/shared/featured-on-tailwind";
 
 export default function Home() {
 	return (
@@ -18,6 +19,10 @@ export default function Home() {
 						<p className="mt-1 md:mt-3 text-center text-sm md:text-lg text-black/50">Search any video, powered by AI embeddings</p>
 					</div>
 					<Start />
+					
+					<div className="w-full flex flex-row justify-center mt-4">
+						<FeaturedOnTailwind />
+					</div>
 				</div>
 			</div>
 
