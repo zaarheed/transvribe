@@ -9,7 +9,7 @@
     },
     "api": {
         "type": "openapi",
-        "url": "https://wwww.transvribe.com/ai-plugin/openapi.yaml",
+        "url": "https://www.transvribe.com/ai-plugin/openapi.yaml",
         "is_user_authenticated": false
     },
     "logo_url": "https://www.transvribe.com/assets/sq-logo-100.jpg",
