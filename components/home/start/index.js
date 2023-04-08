@@ -91,6 +91,7 @@ export default function Start() {
 							placeholder:text-transparent
 							focus:border-gray-500 focus:outline-none
 						`}
+						disabled={loading}
 						autoComplete="off"
 						value={url}
 						onChange={({ target }) => setUrl(target.value)}
@@ -122,6 +123,7 @@ export default function Start() {
 							placeholder:text-transparent
 							focus:border-gray-500 focus:outline-none
 						`}
+						disabled={loading}
 						autoComplete="off"
 						value={question}
 						onChange={({ target }) => setQuestion(target.value)}
@@ -160,10 +162,6 @@ export default function Start() {
 						)}
 					</div>
 				</div>
-				<p className="text-xs text-center text-gray-700">
-					Note: The page will not load if your video does not have English captions. Support for more languages coming soon.
-				</p>
-				{JSON.stringify()}
 			</form>
 			<Modal show={showPlaylistModal} onClose={() => setPlaylistModal(false)} showCloseButton={true} size="playlist">
 				<PlaylistModal url={url} />
