@@ -18,7 +18,7 @@ export default function YoutubeVideo({ video }) {
     const [showMoreOptions, setShowMoreOptions] = useState(false);
     const [messages, setMessages] = useState([
         {
-            "message": `We're still processing your video but you can begin to ask any questions. Please keep in mind this is a work in progress and send all feedback on Twitter: [@zaarheed](https://www.twitter.com/zaarheed)`,
+            "message": `You're video is ready! Go ahead and ask any questions and send all feedback on Twitter: [@zaarheed](https://www.twitter.com/zaarheed)`,
             "type": "apiMessage"
         }
     ]);
