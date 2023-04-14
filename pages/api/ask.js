@@ -1,10 +1,10 @@
 import pg from "@/server-utils/pg";
 import { Document } from "langchain/document";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import { HNSWLib } from "langchain/vectorstores";
-import { OpenAIEmbeddings } from "langchain/embeddings";
-import { ChatVectorDBQAChain } from "langchain/chains";
-import { OpenAI } from "langchain/llms";
+import { HNSWLib } from "langchain/vectorstores/hnswlib";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { ChatVectorDBQAChain, ConversationalRetrievalQAChain } from "langchain/chains";
+import { OpenAI } from "langchain/llms/openai";
 import { OPENAI_API_KEY } from "@/constants/config";
 import uniqid from "uniqid";
 import loadYoutubeVideoFromId from "@/server-utils/load-youtube-video-from-id";
@@ -39,11 +39,11 @@ export default async function handler(req, res) {
 
     if (url) {
         if (url.includes("youtu.be")) {
-			youtubeVideoId = url.split("/").pop().split("?").shift();
-		}
-		else {
-			youtubeVideoId = url.split("v=").pop().split("&").shift();
-		}
+            youtubeVideoId = url.split("/").pop().split("?").shift();
+        }
+        else {
+            youtubeVideoId = url.split("v=").pop().split("&").shift();
+        }
     }
 
     if (youtubeVideoId) {
@@ -92,10 +92,15 @@ export default async function handler(req, res) {
 
     const vectorStore = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings());
 
-    const chain = ChatVectorDBQAChain.fromLLM(model, vectorStore);
+    const chain = ConversationalRetrievalQAChain.fromLLM(
+        model,
+        vectorStore.asRetriever()
+    );
 
     const response = await chain.call({
-        question: s,
+        question: `You are a helpful chatbot that answers questions about a video using the transcript provided as context. If you can't answer the question based on the transcript provided, say 'I don't know'.
+            Answer the following question: ${s}
+        `,
         chat_history: []
     });
 
