@@ -98,7 +98,7 @@ export default async function handler(req, res) {
     );
 
     const response = await chain.call({
-        question: `You are a helpful chatbot that answers questions about a video using the transcript provided as context. If you can't answer the question based on the transcript provided, say 'I don't know'.
+        question: `You are a helpful chatbot that answers requests about a video using the transcript provided as context. If you can't answer the request based on the transcript provided, say 'I don't know'.
             Answer the following question: ${s}
         `,
         chat_history: []
