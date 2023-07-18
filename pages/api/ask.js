@@ -97,9 +97,9 @@ export default async function handler(req, res) {
         vectorStore.asRetriever()
     );
 
-    const response = await chain.call({
-        question: `You are a helpful chatbot that answers questions and requests about a video using the transcript provided as context. If you can't answer the request based on the transcript provided, say 'I don't know'.
-            Answer the following question: ${s}
+    let response = await chain.call({
+        question: `You are a helpful chatbot that answers questions and requests about a video using the transcript provided as context.
+            Given the snippet, answer the following question: ${s}
         `,
         chat_history: []
     });
@@ -111,5 +111,34 @@ export default async function handler(req, res) {
             ('${uniqid()}', '${s.replaceAll("'", "''")}', '${response.text.replaceAll("'", "''")}', '${id}', 'youtube-video')
     `);
 
-    res.json(response);
+    if (response.text.includes("I don't know")) {
+        let newQuestion = await chain.call({
+            question: `Suggest an alternative way to ask the following question: ${s}
+            `,
+            chat_history: []
+        });
+    
+        await pg.execute(`
+            insert into searches
+                (id, question, answer, video_id, video_type)
+            values
+                ('${uniqid()}', '${s.replaceAll("'", "''")}', '${newQuestion.text.replaceAll("'", "''")}', '${id}', 'youtube-video')
+        `);
+
+        console.log("new question", newQuestion.text);
+
+        response = await chain.call({
+            question: `You are a helpful chatbot that answers questions and requests about a video using the transcript provided as context.
+                Given the snippet, answer the following question: ${s}
+            `,
+            chat_history: []
+        });
+    }
+
+    console.log(response.text)
+
+    res.json({
+        ...response,
+        text: response.text.trim()
+    });
 }
