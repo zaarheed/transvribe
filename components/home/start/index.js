@@ -1,11 +1,13 @@
+"use client";
+
 import Modal from "@/components/shared/modal";
 import { lambda } from "@/services/api";
 import hasValidProSession from "@/utils/valid-pro-session";
-import { useRouter } from "next/router";
 import { Fragment, useState } from "react";
 import EnglishCaptionsModal from "./english-captions-modal";
 import FormErrorModal from "./form-error-modal";
 import PlaylistModal from "./playlist-modal";
+import { useRouter } from "next/navigation";
 
 export default function Start() {
 	const router = useRouter();
@@ -13,7 +15,6 @@ export default function Start() {
 	const [showPlaylistModal, setPlaylistModal] = useState(false);
 	const [showCaptionsModal, setCaptionsModal] = useState(false);
 	const [url, setUrl] = useState("");
-	const [question, setQuestion] = useState("");
 	const [error, setError] = useState(null);
 
 	const handleSubmit = async (e) => {
@@ -35,7 +36,7 @@ export default function Start() {
 		let id = null;
 
 		if (url.includes("/playlist?list=")) {
-			await handleSubmitForPlaylist({ url, question });
+			await handleSubmitForPlaylist({ url, question: "" });
 			return;
 		}
 
@@ -56,7 +57,7 @@ export default function Start() {
 		
 		const { youtubeId } = response;
 
-		router.push(`/ytv/${youtubeId}?firstQuestion=${encodeURIComponent(question)}`);
+		router.push(`/ytv/${youtubeId}`);
 		// await lambda.get(`/search?s=${form.question}`)
 	};
 
@@ -80,7 +81,7 @@ export default function Start() {
 	return (
 		<Fragment>
 			<form className="mx-auto mt-6 max-w-2xl" onSubmit={handleSubmit}>
-				<div className="relative w-full rounded-lg border-2 border-transparent bg-white px-5 shadow hover:border-blue-500 mb-4">
+				<div className="relative w-full rounded-lg border-2 border-transparent bg-white px-5 shadow hover:border-blue-500 mb-4 flex flex-row items-center">
 					<input
 						type="text"
 						name="url"
@@ -111,38 +112,6 @@ export default function Start() {
 					>
 						Paste a YouTube URL
 					</label>
-				</div>
-				<div className="relative w-full rounded-lg border-2 border-transparent bg-white px-5 shadow hover:border-blue-500 mb-4 flex flex-row items-center">
-					<input
-						type="question"
-						name="question"
-						id="question"
-						placeholder="Enter a question"
-						className={`
-							peer w-full rounded-md px-3 py-3
-							placeholder:text-transparent
-							focus:border-gray-500 focus:outline-none
-						`}
-						disabled={loading}
-						autoComplete="off"
-						value={question}
-						onChange={({ target }) => setQuestion(target.value)}
-					/>
-					<label
-						htmlFor="email"
-						className={`
-							pointer-events-none absolute top-0 left-0 ml-3 origin-left
-							-translate-y-1/2 transform bg-blue-500 px-1 text-sm text-white
-							transition-all duration-300 ease-in-out
-							peer-placeholder-shown:top-1/2 peer-placeholder-shown:ml-4
-							peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400
-							peer-focus:-top-0 peer-focus:ml-3 peer-focus:text-sm
-							peer-focus:text-gray-800 peer-focus:bg-blue-500 peer-focus:text-white rounded
-							peer-placeholder-shown:text-gray-500 peer-placeholder-shown:bg-white
-						`}
-					>
-						Ask your first question
-					</label>
 					<div className="relative h-full flex flex-col justify-center">
 						{!loading && (
 							<button
@@ -169,7 +138,7 @@ export default function Start() {
 			<Modal show={showCaptionsModal} onClose={() => setCaptionsModal(false)} showCloseButton={true} size="playlist">
 				<EnglishCaptionsModal url={url} />
 			</Modal>
-			<Modal show={error} onClose={() => setError(null)} showCloseButton={true} size="playlist">
+			<Modal show={!!error} onClose={() => setError(null)} showCloseButton={true} size="playlist">
 				<FormErrorModal error={error} />
 			</Modal>
 		</Fragment>

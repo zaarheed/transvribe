@@ -5,6 +5,7 @@ module.exports = {
 		"./components/**/*.js",
 		"./constants/**/*.js",
 		"./_projects/**/*.mdx",
+		"./app/**/*.js",
 		"./_posts/**/*.mdx"
 	],
 	theme: {

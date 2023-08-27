@@ -1,13 +1,13 @@
+import PopularVideos from "@/components/home/popular-videos";
 import Start from "@/components/home/start";
-import FeaturedOnTailwind from "@/components/shared/featured-on-tailwind";
 
-export default function Home() {
+export default function Root() {
 	return (
-		<section className="w-screen h-screen relative">
-			<div className="flex min-h-screen flex-col items-center justify-center py-10 px-4">
-				<img src="/assets/beams.jpg" alt="" className="absolute w-full h-full object-cover" />
-				<div className="absolute inset-0 bg-[url(/assets/grid.svg)] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
-				<div className="z-10 w-full max-w-screen-sm">
+		<section className="w-full relative">
+            <img src="/assets/beams.jpg" alt="" className="absolute w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-[url(/assets/grid.svg)] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
+			<div className="flex min-h-screen flex-col items-center pt-10 px-4 z-10 relative sm:justify-center">
+				<div className="w-full max-w-screen-sm">
 					<div className="">
 						<div className="flex flex-row space-x-1 items-center justify-center">
 							<h1 className="text-center text-3xl font-bold tracking-tight sm:text-5xl">Transvribe</h1>
@@ -21,12 +21,12 @@ export default function Home() {
 					<Start />
 					
 					<div className="w-full flex flex-row justify-center mt-4">
-						<FeaturedOnTailwind />
+						<PopularVideos />
 					</div>
 				</div>
 			</div>
 
-			<div className="w-full absolute bottom-2">
+			<div className="w-full z-10 relative py-2">
 				<div className="w-full max-w-7xl mx-auto px-4 flex flex-row justify-center text-xs md:text-base">
 					<div className="flex flex-row space-x-1 items-center">
 						<img src="https://zmdev.com/assets/profile.jpg" className="relative rounded-full border border-2 border-black w-7 h-7" />
