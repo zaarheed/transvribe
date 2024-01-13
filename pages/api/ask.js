@@ -1,10 +1,10 @@
 import pg from "@/server-utils/pg";
-import { Document } from "langchain/document";
+import { Document } from "@langchain/core/documents";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import { HNSWLib } from "langchain/vectorstores/hnswlib";
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { HNSWLib } from "@langchain/community/vectorstores/hnswlib";
+import { OpenAIEmbeddings } from "@langchain/openai";
 import { ConversationalRetrievalQAChain } from "langchain/chains";
-import { OpenAI } from "langchain/llms/openai";
+import { OpenAI } from "@langchain/openai";
 import { OPENAI_API_KEY } from "@/constants/config";
 import uniqid from "uniqid";
 import loadYoutubeVideoFromId from "@/server-utils/load-youtube-video-from-id";
