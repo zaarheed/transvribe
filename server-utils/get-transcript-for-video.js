@@ -6,9 +6,20 @@ export default async function getTranscriptForVideo(videoId) {
     const videoPageHtml = html.split('"captions":');
 
     let captionsUrl = JSON.parse(videoPageHtml[1].split(',"videoDetails')[0].replace('\n', ''));
-    captionsUrl = captionsUrl?.playerCaptionsTracklistRenderer?.captionTracks;
+
+    // 4th Sept 2024
+    // `captionsUrl.playerCaptionsTracklistRenderer` dissapeared from the payload
+    // so I introduced a backwards-compatible change to check for `captionsUrl.playerCaptionsTracklistRenderer` first
+    // and if it doesn't exist, then use the new `captionTracks` field directly on `captionsUrl`
+    if (captionsUrl?.playerCaptionsTracklistRenderer) {
+        captionsUrl = captionsUrl?.playerCaptionsTracklistRenderer.captionTracks;
+    }
+    else {
+        captionsUrl = captionsUrl?.captionTracks
+    }
+    
     captionsUrl = captionsUrl.find((track) => {
-        return /english/i.test(track?.name?.simpleText)
+        return /en/i.test(track?.languageCode);
     });
 
     if (!captionsUrl) {
