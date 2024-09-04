@@ -1,28 +1,8 @@
 {
     "crons": [
         {
-            "path": "/api/reddit-bot/apple",
-            "schedule": "0 */2 * * *"
-        },
-        {
-            "path": "/api/reddit-bot/angular",
-            "schedule": "0 */3 * * *"
-        },
-        {
-            "path": "/api/reddit-bot/javascript",
-            "schedule": "0 */4 * * *"
-        },
-        {
             "path": "/api/reddit-bot/Frontend",
             "schedule": "0/15 * * * *"
-        },
-        {
-            "path": "/api/reddit-bot/reactjs",
-            "schedule": "0/50 * * * *"
-        },
-        {
-            "path": "/api/reddit-bot/reactnative",
-            "schedule": "0 * * * *"
         }
     ]
 }
