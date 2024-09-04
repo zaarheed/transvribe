@@ -29,6 +29,7 @@ export default async function loadYoutubeVideoFromId(id) {
         url = response.url;
     }
     catch (error) {
+        console.error(`Inavlid YouTube video URL (${id})`);
         return ["Invalid YouTube video URL"];
     }
 
