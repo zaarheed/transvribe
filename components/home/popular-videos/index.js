@@ -2,9 +2,14 @@ import { BASE_URL } from "@/constants/config";
 import Link from "next/link";
 
 async function fetchPopularVideos() {
-    const res = await fetch(`${BASE_URL}/api/videos?sort=latest`, { next: { revalidate: 60 * 60 } });
-    const response = await res.json();
-    return response.videos;
+    try {
+        const res = await fetch(`${BASE_URL}/api/videos?sort=latest`, { next: { revalidate: 60 * 60 } });
+        const response = await res.json();
+        return response.videos;
+    }
+    catch (error) {
+        return []
+    }
 }
 
 export default async function PopularVideos() {
