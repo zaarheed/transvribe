@@ -2,6 +2,7 @@ import getTranscriptForVideo from "@/server-utils/get-transcript-for-video";
 import getYouTubeVideoInfo from "@/server-utils/get-youtube-video-info";
 import pg from "@/server-utils/pg";
 import uniqid from "uniqid";
+import loadYoutubeVideoFromIdUsingProto from "./load-youtube-video-from-id-using-proto";
 
 export default async function loadYoutubeVideoFromId(id) {
     const [existingVideo] = await pg.execute(`
@@ -38,7 +39,7 @@ export default async function loadYoutubeVideoFromId(id) {
     let parts = [];
 
     try {
-        const data = await getTranscriptForVideo(id);
+        const data = await loadYoutubeVideoFromIdUsingProto(id);
         transcript = data.transcript;
         parts = data.parts;
     }
@@ -69,7 +70,7 @@ export default async function loadYoutubeVideoFromId(id) {
         insert into youtube_video_parts
         (id, youtube_id, text, start, duration)
         values
-        ${parts.map(p => `('${uniqid()}', '${p.id}', '${p.text.replaceAll("'", "''")}', ${+p.start}, ${+p.duration})`).join(", ")}
+        ${parts.map(p => `('${uniqid()}', '${id}', '${p.text.replaceAll("'", "''")}', ${+p.start}, ${+p.duration})`).join(", ")}
     `);
 
     await pg.execute(`
