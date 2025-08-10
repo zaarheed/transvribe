@@ -6,7 +6,8 @@ export default async function handler(req, res) {
 
     const [session] = await pg.execute(`
         update pro_sessions
-        set expires_at = now() + interval '1 day'
+        set expires_at = now() + interval '1 day',
+        paid = TRUE
         where id = '${id}'
         returning id, expires_at, first_url
     `);

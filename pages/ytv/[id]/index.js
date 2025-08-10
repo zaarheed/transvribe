@@ -47,7 +47,19 @@ export default function YoutubeVideo({ video }) {
     }, []);
 
     // Handle errors
-    const handleError = () => {
+    const handleError = (error) => {        
+        if (error === "INVALID_API_KEY") {
+            const currentUrl = window.location.pathname + window.location.search;
+            router.push(`/pricing?redirect_from=${encodeURIComponent(currentUrl)}&redirect_reason=INVALID_API_KEY`);
+            return;
+        }
+
+        if (error === "NO_SESSION") {
+            const currentUrl = window.location.pathname + window.location.search;
+            router.push(`/pricing?redirect_from=${encodeURIComponent(currentUrl)}&redirect_reason=NO_SESSION`);
+            return;
+        }
+
         setMessages((prevMessages) => [...prevMessages, { "message": "Oops! We're getting way too much traffic right now to handle your request. Please try again in a few hours.", "type": "apiMessage" }]);
         setLoading(false);
         setUserInput("");
@@ -59,6 +71,8 @@ export default function YoutubeVideo({ video }) {
 
         await ask(userInput);
     };
+
+
 
     const ask = async (question) => {
         if (question.trim() === "") {
@@ -74,11 +88,14 @@ export default function YoutubeVideo({ video }) {
             return;
         }
 
+        // Check for pro session ID in localStorage
+        const proSessionId = typeof window !== 'undefined' ? localStorage.getItem('pro_session_id') : null;
+        
         // Send user question and history to API
-        const [error, response] = await lambda.get(`/ask?youtubeVideoId=${id}&s=${encodeURIComponent(question)}`);
+        const [error, response] = await lambda.get(`/ask?youtubeVideoId=${id}&s=${encodeURIComponent(question)}${proSessionId ? `&pro_session_id=${encodeURIComponent(proSessionId)}` : ''}`);
 
         if (error) {
-            handleError();
+            handleError(error);
             return;
         }
 

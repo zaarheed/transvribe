@@ -10,7 +10,44 @@ import uniqid from "uniqid";
 import loadYoutubeVideoFromId from "@/server-utils/load-youtube-video-from-id";
 
 export default async function handler(req, res) {
-    let { youtubeVideoId, s, youtubePlaylistId, url } = req.query;
+    let { youtubeVideoId, s, youtubePlaylistId, url, pro_session_id } = req.query;
+
+    let llm_api_key = OPENAI_API_KEY; // Default to environment API key
+    const session_id = pro_session_id;
+
+    if (!session_id) {
+        return res.status(400).json({
+            error: "NO_SESSION"
+        });
+    }
+
+    const [session] = await pg.execute(`
+        SELECT llm_api_key, expires_at , paid
+        FROM pro_sessions 
+        WHERE id = '${session_id}'
+    `);
+
+    if (!session) {
+        return res.status(400).json({
+            error: "INVALID_SESSION"
+        });
+    }
+
+    if (new Date() > new Date(session.expires_at)) {
+        return res.status(400).json({
+            error: "SESSION_EXPIRED"
+        });
+    }
+
+    const { paid } = session;
+
+    if (!paid && !session.llm_api_key) {
+        return res.status(400).json({
+            error: "PAYMENT_REQUIRED"
+        });
+    }
+
+    llm_api_key = session.llm_api_key || OPENAI_API_KEY;
 
     let fullTranscript = "", author = "", id = "";
 
@@ -88,7 +125,7 @@ export default async function handler(req, res) {
     }
 
     const model = new OpenAI({
-        openAIApiKey: OPENAI_API_KEY
+        openAIApiKey: llm_api_key || OPENAI_API_KEY
     });
 
     const splitter = new RecursiveCharacterTextSplitter({
@@ -107,12 +144,21 @@ export default async function handler(req, res) {
         vectorStore.asRetriever()
     );
 
-    let response = await chain.call({
-        question: `You are a helpful chatbot that answers questions and requests about a video using the transcript provided as context.
-            Given the snippet, answer the following question: ${s}
-        `,
-        chat_history: []
-    });
+    let response;
+    try {
+        response = await chain.call({
+            question: `You are a helpful chatbot that answers questions and requests about a video using the transcript provided as context.
+                Given the snippet, answer the following question: ${s}
+            `,
+            chat_history: []
+        });
+    } catch (error) {
+        if (error.message && error.message.includes("401 Incorrect API key")) {
+            return res.status(400).json({
+                error: "INVALID_API_KEY"
+            });
+        }
+    }
 
     await pg.execute(`
         insert into searches
@@ -122,27 +168,34 @@ export default async function handler(req, res) {
     `);
 
     if (response.text.includes("I don't know")) {
-        let newQuestion = await chain.call({
-            question: `Suggest an alternative way to ask the following question: ${s}
-            `,
-            chat_history: []
-        });
-    
-        await pg.execute(`
-            insert into searches
-                (id, question, answer, video_id, video_type)
-            values
-                ('${uniqid()}', '${s.replaceAll("'", "''")}', '${newQuestion.text.replaceAll("'", "''")}', '${id}', 'youtube-video')
-        `);
+        let newQuestion;
+        try {
+            newQuestion = await chain.call({
+                question: `Suggest an alternative way to ask the following question: ${s}
+                `,
+                chat_history: []
+            });
+            
+            await pg.execute(`
+                insert into searches
+                    (id, question, answer, video_id, video_type)
+                values
+                    ('${uniqid()}', '${s.replaceAll("'", "''")}', '${newQuestion.text.replaceAll("'", "''")}', '${id}', 'youtube-video')
+            `);
 
-        console.log("new question", newQuestion.text);
+            console.log("new question", newQuestion.text);
 
-        response = await chain.call({
-            question: `You are a helpful chatbot that answers questions and requests about a video using the transcript provided as context.
-                Given the snippet, answer the following question: ${s}
-            `,
-            chat_history: []
-        });
+            response = await chain.call({
+                question: `You are a helpful chatbot that answers questions and requests about a video using the transcript provided as context.
+                    Given the snippet, answer the following question: ${s}
+                `,
+                chat_history: []
+            });
+        } catch (error) {
+            console.log("=== Alternative Question Generation Failed ===");
+            console.log("Error:", error.message);
+            // Continue with the original response if alternative question generation fails
+        }
     }
 
     console.log(response.text)

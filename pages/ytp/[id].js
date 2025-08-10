@@ -42,7 +42,14 @@ export default function YoutubePlaylist({ playlist }) {
     }, []);
 
     // Handle errors
-    const handleError = () => {
+    const handleError = (error) => {
+        if (error && error.error === "INVALID_API_KEY") {
+            // Redirect to pricing page to handle API key or Pro payment
+            const currentUrl = window.location.pathname + window.location.search;
+            router.push(`/pricing?redirect_from=${encodeURIComponent(currentUrl)}&redirect_reason=INVALID_API_KEY`);
+            return;
+        }
+
         setMessages((prevMessages) => [...prevMessages, { "message": "Oops! We're getting way too much traffic right now to handle your request. Please try again in a few hours.", "type": "apiMessage" }]);
         setLoading(false);
         setUserInput("");
@@ -61,6 +68,8 @@ export default function YoutubePlaylist({ playlist }) {
         await ask(userInput);
     };
 
+    
+
     const ask = async (question) => {
         if (question.trim() === "") {
             return;
@@ -69,11 +78,20 @@ export default function YoutubePlaylist({ playlist }) {
         setLoading(true);
         setMessages((prevMessages) => [...prevMessages, { "message": question, "type": "userMessage" }]);
 
+        // Check for pro session ID in localStorage
+        const proSessionId = typeof window !== 'undefined' ? localStorage.getItem('pro_session_id') : null;
+        
+        // Debug logging
+        console.log("=== Frontend Pro Session Debug ===");
+        console.log("Pro session ID found:", proSessionId ? "YES" : "NO");
+        console.log("Pro session ID:", proSessionId || "undefined");
+        console.log("==================================");
+        
         // Send user question and history to API
-        const [error, response] = await lambda.get(`/ask?youtubePlaylistId=${id}&s=${encodeURIComponent(question)}`);
+        const [error, response] = await lambda.get(`/ask?youtubePlaylistId=${id}&s=${encodeURIComponent(question)}${proSessionId ? `&pro_session_id=${encodeURIComponent(proSessionId)}` : ''}`);
 
         if (error) {
-            handleError();
+            handleError(error);
             return;
         }
 
@@ -205,6 +223,8 @@ export default function YoutubePlaylist({ playlist }) {
                         </div>
                     </form>
                 </div>
+                
+
             </main>
         </div>
     )

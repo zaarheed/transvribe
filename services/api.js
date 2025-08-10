@@ -10,7 +10,7 @@ const lambda_get = async (url, headers = {}) => {
     let response = await res.json();
 
     if (res.status !== 200) {
-        return [response.message];
+        return [response.error, null];
     }
 
     return [null, response];

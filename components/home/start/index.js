@@ -3,10 +3,11 @@
 import Modal from "@/components/shared/modal";
 import { lambda } from "@/services/api";
 import hasValidProSession from "@/utils/valid-pro-session";
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 import EnglishCaptionsModal from "./english-captions-modal";
 import FormErrorModal from "./form-error-modal";
 import PlaylistModal from "./playlist-modal";
+
 import { useRouter } from "next/navigation";
 
 export default function Start() {
@@ -14,8 +15,56 @@ export default function Start() {
 	const [loading, setLoading] = useState(false);
 	const [showPlaylistModal, setPlaylistModal] = useState(false);
 	const [showCaptionsModal, setCaptionsModal] = useState(false);
+
 	const [url, setUrl] = useState("");
 	const [error, setError] = useState(null);
+
+	// Check for URL parameters when component mounts
+	useEffect(() => {
+		const urlParams = new URLSearchParams(window.location.search);
+		const urlFromParams = urlParams.get('url');
+		const proSessionIdFromParams = urlParams.get('proSessionId');
+
+		if (urlFromParams && proSessionIdFromParams) {
+			setUrl(decodeURIComponent(urlFromParams));
+			// Store the pro session ID
+			localStorage.setItem('pro_session_id', decodeURIComponent(proSessionIdFromParams));
+			// Process the video immediately
+			processVideoWithProSession(decodeURIComponent(urlFromParams));
+			// Clean up the URL
+			window.history.replaceState({}, document.title, window.location.pathname);
+		}
+	}, []);
+
+	const processVideoWithProSession = async (videoUrl) => {
+		setLoading(true);
+
+		let id = null;
+
+		if (videoUrl.includes("/playlist?list=")) {
+			await handleSubmitForPlaylist({ url: videoUrl, question: "" });
+			return;
+		}
+
+		if (videoUrl.includes("youtu.be")) {
+			id = videoUrl.split("/").pop().split("?").shift();
+		}
+		else {
+			id = videoUrl.split("v=").pop().split("&").shift();
+		}
+
+		const [error, response] = await lambda.get(`/load-video?url=${encodeURIComponent(videoUrl)}`);
+
+		if (error) {
+			setCaptionsModal(true);
+			setLoading(false);
+			return;
+		}
+
+		const { youtubeId } = response;
+
+		router.push(`/ytv/${youtubeId}`);
+	};
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -33,32 +82,29 @@ export default function Start() {
 			return;
 		}
 
-		let id = null;
+		const pro_session_id = localStorage.getItem('pro_session_id');
 
-		if (url.includes("/playlist?list=")) {
-			await handleSubmitForPlaylist({ url, question: "" });
-			return;
-		}
+		if (pro_session_id) {
+			const [error, response] = await lambda.get(`/load-video?url=${encodeURIComponent(url)}`);
 
-		if (url.includes("youtu.be")) {
-			id = url.split("/").pop().split("?").shift();
-		}
-		else {
-			id = url.split("v=").pop().split("&").shift();
-		}
+			if (error) {
+				setCaptionsModal(true);
+				setLoading(false);
+				return;
+			}
 
-		const [error, response] = await lambda.get(`/load-video?url=${encodeURIComponent(url)}`);
-		
-		if (error) {
-			setCaptionsModal(true);
+			const { youtubeId } = response;
+
+			router.push(`/ytv/${youtubeId}`);
 			setLoading(false);
 			return;
 		}
-		
-		const { youtubeId } = response;
 
-		router.push(`/ytv/${youtubeId}`);
-		// await lambda.get(`/search?s=${form.question}`)
+		// Check if user has provided API key or has pro session
+		// For now, we'll redirect to pricing page - this will be enhanced later
+		router.push(`/pricing?url=${encodeURIComponent(url)}`);
+		setLoading(false);
+		return;
 	};
 
 	const handleSubmitForPlaylist = async ({ url, question }) => {
@@ -77,6 +123,8 @@ export default function Start() {
 		setLoading(false);
 		return;
 	};
+
+
 
 	return (
 		<Fragment>
@@ -132,6 +180,7 @@ export default function Start() {
 					</div>
 				</div>
 			</form>
+
 			<Modal show={showPlaylistModal} onClose={() => setPlaylistModal(false)} showCloseButton={true} size="playlist">
 				<PlaylistModal url={url} />
 			</Modal>
