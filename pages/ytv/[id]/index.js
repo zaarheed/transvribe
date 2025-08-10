@@ -259,7 +259,7 @@ export async function getServerSideProps({ params }) {
     const { id } = params;
 
     let [video] = await pg.execute(`
-        select * from youtube_videos where youtube_id = '${id}'
+        select * from youtube_videos where youtube_id = '${id}' limit 1
     `);
 
     if (!video) {
