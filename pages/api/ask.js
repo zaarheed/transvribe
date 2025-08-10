@@ -54,23 +54,33 @@ export default async function handler(req, res) {
             where t.youtube_id = '${youtubeVideoId}'
         `);
 
-        fullTranscript = videoRecord ? videoRecord.text : null;
+        if (videoRecord) {
+            fullTranscript = videoRecord.text;
+            author = videoRecord.author;
+            id = videoRecord.id;
+        }
     }
 
     if (!fullTranscript) {
-        const [error] = await loadYoutubeVideoFromId(youtubeVideoId);
-        res.status(400).json({ message: error });
-        return;
-    }
-
-    let [videoRecord] = await pg.execute(`
+        const [error, videoData] = await loadYoutubeVideoFromId(youtubeVideoId);
+        if (error) {
+            res.status(400).json({ message: error });
+            return;
+        }
+        // Update the id variable with the newly created video's database ID
+        id = videoData.id;
+        // We need to get the transcript and author for the newly loaded video
+        let [videoRecord] = await pg.execute(`
             select t.text, v.author, v.id
             from youtube_video_transcripts t
             join youtube_videos v on t.youtube_id = v.youtube_id
             where t.youtube_id = '${youtubeVideoId}'
         `);
-
-    fullTranscript = videoRecord.text;
+        if (videoRecord) {
+            fullTranscript = videoRecord.text;
+            author = videoRecord.author;
+        }
+    }
 
     if (!fullTranscript) {
         res.status(400).json({ message: "Could not retrieve transcript" });
