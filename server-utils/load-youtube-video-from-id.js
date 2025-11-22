@@ -44,13 +44,30 @@ export default async function loadYoutubeVideoFromId(id) {
 
     try {
         const data = await loadYoutubeVideoFromIdUsingProto(id);
-        transcript = data.transcript;
-        parts = data.parts;
-        console.info(`Captions loaded successfully for video ${id}`);
+        if (data && data.transcript && data.parts) {
+            transcript = data.transcript;
+            parts = data.parts;
+            console.info(`Captions loaded successfully via proto method for video ${id}`);
+        } else {
+            throw new Error("Proto method failed or returned invalid data");
+        }
     }
     catch (error) {
-        console.warn(`No captions available for video ${id}`);
-        return ["No captions available"];
+        console.warn(`Proto method failed for video ${id}, trying HTML parsing fallback:`, error.message);
+        try {
+            const fallbackData = await getTranscriptForVideo(id);
+            if (fallbackData && fallbackData.transcript && fallbackData.parts) {
+                transcript = fallbackData.transcript;
+                parts = fallbackData.parts;
+                console.info(`Captions loaded successfully via HTML parsing for video ${id}`);
+            } else {
+                throw new Error("HTML parsing method returned invalid data");
+            }
+        }
+        catch (fallbackError) {
+            console.error(`Both methods failed for video ${id}:`, fallbackError.message);
+            return ["No captions available"];
+        }
     }
 
     const videoRecordId = uniqid();
