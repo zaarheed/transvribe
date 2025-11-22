@@ -20,6 +20,8 @@ export default async function loadYoutubeVideoFromId(id) {
         ];
     }
 
+    console.info(`Video ${id} does not already exist. Loading Video info next...`);
+
     let title, author, thumbUrl, url;
 
     try {
@@ -34,6 +36,8 @@ export default async function loadYoutubeVideoFromId(id) {
         return ["Invalid YouTube video URL"];
     }
 
+    console.info(`Video ${id} info loaded successfully (title: ${title})`);
+
 
     let transcript = "";
     let parts = [];
@@ -42,8 +46,10 @@ export default async function loadYoutubeVideoFromId(id) {
         const data = await loadYoutubeVideoFromIdUsingProto(id);
         transcript = data.transcript;
         parts = data.parts;
+        console.info(`Captions loaded successfully for video ${id}`);
     }
     catch (error) {
+        console.warn(`No captions available for video ${id}`);
         return ["No captions available"];
     }
 
