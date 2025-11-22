@@ -83,12 +83,17 @@ export default function Process() {
                         videoId = first_url.split("v=").pop().split("&").shift();
                     }
 
-                    await lambda.get(`/load-video?url=${encodeURIComponent(first_url)}`);
+                    const [videoLoadError] = await lambda.get(`/load-video?url=${encodeURIComponent(first_url)}`);
+                    
+                    if (videoLoadError) {
+                        throw new Error(videoLoadError);
+                    }
                     
                     router.push(`/ytv/${videoId}`);
                 } catch (videoError) {
                     console.error('Video processing error:', videoError);
-                    router.push('/');
+                    // Re-throw to let outer catch handle it (for HTTP 400 errors)
+                    throw videoError;
                 }
             } else {
                 // Generic URL or homepage, redirect to homepage

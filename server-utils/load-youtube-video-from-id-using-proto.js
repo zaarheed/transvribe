@@ -78,5 +78,9 @@ export default async function loadYoutubeVideoFromIdUsingProto(videoId) {
 		}
 	} catch (err) {
 		console.error('Error:', err);
+		// Log the actual error response from YouTube if available
+		if (err.response && err.response.data) {
+			console.error('YouTube API error response:', JSON.stringify(err.response.data, null, 2));
+		}
 	}
 }
